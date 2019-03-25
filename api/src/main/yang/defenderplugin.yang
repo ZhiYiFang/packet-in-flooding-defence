@@ -1,0 +1,165 @@
+// Contents of "defenderplugin"
+module defenderplugin {
+    namespace "urn:opendaylight:defenderplugin";
+    prefix "defenderplugin";
+
+    revision 2018-07-21 {
+        description "Initial revision";
+    }
+
+    // 根据源IP地址来查找攻击
+    rpc attacksFromIP {
+        input {
+            leaf SrcIP {
+                type string;
+            }
+        }
+        output {
+            uses alert;
+        }
+    }
+    // 根据目的IP地址来查找攻击
+    rpc attacksToIP {
+        input {
+            leaf DstIP {
+                type string;
+            }
+        }
+        output {
+            uses alert;
+        }
+    }
+
+    // 根据时间和窗口获取攻击
+    rpc attacksInTime {
+        input {
+            leaf FromTime {
+                type string;
+            }
+            leaf EndTime {
+                type string;
+            }
+        }
+        output {
+            uses alert;
+        }
+    }
+    grouping alert {
+        list alerts {
+
+            leaf srcPort {
+                type uint16;
+            }
+            leaf dstPort {
+                type uint16;
+            }
+            leaf srcIP {
+                type string;
+            }
+            leaf dstIP {
+                type string;
+            }
+            leaf protocol {
+                type string;
+            }
+            leaf srcMac {
+                type string;
+            }
+            leaf dstMac {
+                type string;
+            }
+            leaf upTime {
+                type string;
+            }
+            leaf downTime {
+                type string;
+            }
+        }
+    }
+
+    // Notification消息传递IP地址和MAC地址等信息
+    notification lowWaterMarkBreached {
+
+        description
+                "Indicates that the Low Water Mark has Breached.";
+        leaf srcPort {
+            type uint16;
+        }
+        leaf dstPort {
+            type uint16;
+        }
+        leaf srcIP {
+            type string;
+        }
+        leaf dstIP {
+            type string;
+        }
+        leaf protocol {
+            type string;
+        }
+        leaf srcMac {
+            type string;
+        }
+        leaf dstMac {
+            type string;
+        }
+    }
+
+    // 在datastore中存储的威胁信息的结构
+    container LWM {
+        list lowwatermark {
+            key secKey;
+            leaf secKey {
+                type string;
+            }
+            leaf nodeID {
+                type string;
+            }
+            leaf nodeConnectorID {
+                type string;
+            }
+            leaf srcMAC {
+                type string;
+            }
+            leaf dstMAC {
+                type string;
+            }
+            leaf srcIP {
+                type string;
+            }
+            leaf dstIP {
+                type string;
+            }
+            leaf protocol {
+                type string;
+            }
+            leaf srcPort {
+                type uint16;
+            }
+            leaf dstPort {
+                type uint16;
+            }
+            leaf packetSize {
+                type uint16;
+            }
+            leaf upwardTime {
+                type string;
+            }
+            leaf downwardTime {
+                type string;
+            }
+            config false;
+        }
+    }
+
+    container sample-data-lwm {
+        leaf samples-lwm {
+            type uint16;
+            mandatory true;
+        }
+        leaf lowWaterMark-lwm {
+            type uint16;
+            mandatory true;
+        }
+    }
+}
